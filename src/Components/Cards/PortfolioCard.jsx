@@ -19,7 +19,7 @@ const PortfolioCard = ({
       >
         <div className="font-semibold text-xl">{title}</div>
         <div className="text-[1rem] font-thin">{desc}</div>
-        <div className="flex gap-x-2 py-2 items-center justify-end">
+        <div className="flex gap-x-2 py-2 items-center justify-end flex-1">
           <img
             src="/Google.png"
             alt="nothing"
