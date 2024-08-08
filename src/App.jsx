@@ -22,7 +22,7 @@ function App() {
           Add New Portfolio
         </div>
       </div>
-      <div className="flex gap-x-2 gap-y-2 flex-wrap px-2 justify-around items-center">
+      <div className="flex gap-x-2 gap-y-2 flex-wrap px-4 justify-around  items-stretch">
         <PortfolioCard
           mainBgColor={" bg-[#716242]"}
           primaryBgColor={" bg-[#483E28]"}
