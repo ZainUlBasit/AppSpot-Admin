@@ -22,11 +22,34 @@ function App() {
           Add New Portfolio
         </div>
       </div>
-      <div className="flex gap-x-2 gap-y-2 flex-wrap px-2">
-        {PortfolioState.data &&
-          PortfolioState.data.map((dt) => {
-            return <PortfolioCard portfolio={dt} />;
-          })}
+      <div className="flex gap-x-2 gap-y-2 flex-wrap px-2 justify-center items-center">
+        <PortfolioCard
+          mainBgColor={" bg-[#716242]"}
+          primaryBgColor={" bg-[#483E28]"}
+          title={"We helped boost sales"}
+          desc={
+            "We digitised Costa Coffee in Bahrain and increased their sales."
+          }
+          imgUrl={"/test.png"}
+        />
+        <PortfolioCard
+          mainBgColor={" bg-[#306CAD]"}
+          primaryBgColor={" bg-[#1D446E]"}
+          title={"We transformed food delivery"}
+          desc={
+            "We built the complete range of solutions for Halal food delivery in the UK."
+          }
+          imgUrl={"/test1.png"}
+        />
+        <PortfolioCard
+          mainBgColor={" bg-[#E34380]"}
+          primaryBgColor={" bg-[#9C2F58]"}
+          title={"We pioneered smart shopping"}
+          desc={
+            "We helped SmartSanta build an AI based e-commerce app fuelled by influencers."
+          }
+          imgUrl={"/test2.png"}
+        />
       </div>
       {OpenModal && (
         <AddNewPortfolioModal Open={OpenModal} setOpen={setOpenModal} />

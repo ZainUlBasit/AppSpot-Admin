@@ -146,6 +146,14 @@ const AddNewPortfolioModal = ({ Open, setOpen }) => {
                   placeholder={"Enter Portfolio Title"}
                 />
                 <CustomInput
+                  Value={title}
+                  setValue={setTitle}
+                  Type={"color"}
+                  label={"Title"}
+                  required={true}
+                  placeholder={"Enter Portfolio Title"}
+                />
+                <CustomInput
                   Value={overview}
                   setValue={setOverview}
                   Type={"text"}
