@@ -13,7 +13,7 @@ const PortfolioCard = ({
     <div
       className={`min-w-[200px] max-w-[450px] relative border-2 border-main overflow-hidden rounded-t-[20px] ${mainBgColor}`}
     >
-      <img src={imgUrl} className="min-w-[200px] max-w-[450px]" />
+      <img src={imgUrl} className="w-full" />
       <div
         className={`w-full text-white px-3 flex flex-col gap-y-4 py-4 rounded-t-[20px] ${primaryBgColor}`}
       >
