@@ -13,7 +13,7 @@ function App() {
   }, []);
   return (
     <div className="w-screen min-h-screen">
-      <div className="flex justify-between items-center py-5 px-5">
+      <div className="flex justify-between items-start py-5 px-5">
         <div className="">Portfolio</div>
         <div
           className="px-3 py-2 border-2 border-black rounded-full hover:bg-black hover:text-white transition-all ease-in-out duration-500 cursor-pointer"
