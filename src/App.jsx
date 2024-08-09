@@ -22,8 +22,36 @@ function App() {
           Add New Portfolio
         </div>
       </div>
-      <div className="flex gap-x-2 gap-y-2 flex-wrap px-4 justify-around  items-stretch pb-4">
-        <PortfolioCard
+      <div className="flex gap-x-2 gap-y-4 flex-wrap px-4 justify-around  items-stretch pb-4">
+        {PortfolioState.loading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            {PortfolioState.data.map((dt) => {
+              return (
+                <PortfolioCard
+                  mainBgColor={dt.main_color}
+                  primaryBgColor={dt.primary_color}
+                  title={dt.title}
+                  desc={dt.desc || ""}
+                  imgUrl={dt.attachment}
+                />
+              );
+            })}
+            {PortfolioState.data.map((dt) => {
+              return (
+                <PortfolioCard
+                  mainBgColor={dt.main_color}
+                  primaryBgColor={dt.primary_color}
+                  title={dt.title}
+                  desc={dt.desc || ""}
+                  imgUrl={dt.attachment}
+                />
+              );
+            })}
+          </>
+        )}
+        {/* <PortfolioCard
           mainBgColor={" bg-[#716242]"}
           primaryBgColor={" bg-[#483E28]"}
           title={"We helped boost sales"}
@@ -49,7 +77,7 @@ function App() {
             "We helped SmartSanta build an AI based e-commerce app fuelled by influencers."
           }
           imgUrl={"/test2.png"}
-        />
+        /> */}
       </div>
       {OpenModal && (
         <AddNewPortfolioModal Open={OpenModal} setOpen={setOpenModal} />

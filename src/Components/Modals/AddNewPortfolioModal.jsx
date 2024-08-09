@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CustomModal from "./CustomModal";
 import CustomInput from "../Inputs/CustomInput";
 import { ErrorToast, SuccessToast } from "../../utils/ShowToast";
-import { useDispatch, useSelector } from "react-redux";
-// import AddingLightLoader from "../Loaders/AddingLightLoader";
+import { useDispatch } from "react-redux";
 import { storage } from "../../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { RiUserForbidFill } from "react-icons/ri";
 import { BiSolidImageAdd } from "react-icons/bi";
 import { AiOutlineFileProtect } from "react-icons/ai";
 import { fetchPortfolios } from "../../store/Slices/PortfolioSlice";
@@ -14,16 +12,14 @@ import { AddPortfolioApi } from "../../Api_Requests/Api_Requests";
 
 const AddNewPortfolioModal = ({ Open, setOpen }) => {
   const [title, setTitle] = useState("");
-  const [overview, setOverview] = useState("");
   const [attachment, setAttachment] = useState(null);
-  const [iosLink, setIosLink] = useState(null);
+  const [iosLink, setIosLink] = useState("");
   const [androidLink, setAndroidLink] = useState("");
-  const [validatingTheProblem, setValidatingTheProblem] = useState("");
-  const [solution, setSolution] = useState("");
-  const [overflow, setOverflow] = useState("");
-  const [Logo, setLogo] = useState("");
-  const CategoryState = useSelector((state) => state.CategoryState);
-
+  const [webLink, setWebLink] = useState("");
+  const [desc, setDesc] = useState("");
+  const [logo, setLogo] = useState(null);
+  const [primaryColor, setPrimaryColor] = useState("#000000");
+  const [mainColor, setMainColor] = useState("#000000");
   const [Loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -31,11 +27,8 @@ const AddNewPortfolioModal = ({ Open, setOpen }) => {
     const file = e.target.files[0];
     setAttachment(file);
   };
-  const handleFileChangeOverflow = (e) => {
-    const file = e.target.files[0];
-    setOverflow(file);
-  };
-  const handleFileChangeOverLogo = (e) => {
+
+  const handleFileChangeLogo = (e) => {
     const file = e.target.files[0];
     setLogo(file);
   };
@@ -54,39 +47,31 @@ const AddNewPortfolioModal = ({ Open, setOpen }) => {
         setLoading(false);
         return;
       }
-      let overflowUrl = "";
-      if (overflow) {
-        const overflowRef = ref(storage, `/overflows/${title}`);
-        const snapshot = await uploadBytes(overflowRef, overflow);
-        overflowUrl = await getDownloadURL(snapshot.ref);
+
+      let logoUrl = "";
+      if (logo) {
+        const logoRef = ref(storage, `/logos/${title}`);
+        const snapshot = await uploadBytes(logoRef, logo);
+        logoUrl = await getDownloadURL(snapshot.ref);
       }
-      if (!overflowUrl) {
-        ErrorToast("Please select an Overflow!");
+      if (!logoUrl) {
+        ErrorToast("Please select a logo!");
         setLoading(false);
         return;
       }
-      let LogoUrl = "";
-      if (Logo) {
-        const LogoRef = ref(storage, `/logos/${title}`);
-        const snapshot = await uploadBytes(LogoRef, Logo);
-        LogoUrl = await getDownloadURL(snapshot.ref);
-      }
-      if (!LogoUrl) {
-        ErrorToast("Please select an Overflow!");
-        setLoading(false);
-        return;
-      }
+
       const response = await AddPortfolioApi({
         title,
-        overview,
         attachment: attachmentUrl,
         ios_link: iosLink,
         android_link: androidLink,
-        validating_the_problem: validatingTheProblem,
-        solution,
-        overflow: overflowUrl,
-        logo: LogoUrl,
+        web_link: webLink,
+        logo: logoUrl,
+        primary_color: primaryColor,
+        main_color: mainColor,
+        desc,
       });
+
       if (response.data.success) {
         SuccessToast("Portfolio added successfully!");
         dispatch(fetchPortfolios());
@@ -146,22 +131,6 @@ const AddNewPortfolioModal = ({ Open, setOpen }) => {
                   placeholder={"Enter Portfolio Title"}
                 />
                 <CustomInput
-                  Value={title}
-                  setValue={setTitle}
-                  Type={"color"}
-                  label={"Title"}
-                  required={true}
-                  placeholder={"Enter Portfolio Title"}
-                />
-                <CustomInput
-                  Value={overview}
-                  setValue={setOverview}
-                  Type={"text"}
-                  label={"Overview"}
-                  required={true}
-                  placeholder={"Enter Overview"}
-                />
-                <CustomInput
                   Value={iosLink}
                   setValue={setIosLink}
                   Type={"text"}
@@ -169,20 +138,6 @@ const AddNewPortfolioModal = ({ Open, setOpen }) => {
                   required={true}
                   placeholder={"Enter iOS Link"}
                 />
-                <div className="relative mb-[15px] w-[297px] maxInputWidth font-[Quicksand]">
-                  <p className="absolute top-[-13px] left-3 w-fit bg-[white] text-custom-bg h-fit text-[18px] font-bold InputLabel font-montserrat">
-                    Logo
-                  </p>
-                  <input
-                    type={"file"}
-                    required={true}
-                    placeholder={"Upload Overflow"}
-                    className="px-3 py-3 border-2 border-custom-bg rounded-[7.94px] w-full outline-none InputText font-montserrat"
-                    onChange={handleFileChangeOverLogo}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col">
                 <CustomInput
                   Value={androidLink}
                   setValue={setAndroidLink}
@@ -192,31 +147,68 @@ const AddNewPortfolioModal = ({ Open, setOpen }) => {
                   placeholder={"Enter Android Link"}
                 />
                 <CustomInput
-                  Value={validatingTheProblem}
-                  setValue={setValidatingTheProblem}
+                  Value={webLink}
+                  setValue={setWebLink}
                   Type={"text"}
-                  label={"Validating the Problem"}
+                  label={"Web Link"}
                   required={true}
-                  placeholder={"Enter Validating the Problem"}
+                  placeholder={"Enter Web Link"}
                 />
                 <CustomInput
-                  Value={solution}
-                  setValue={setSolution}
+                  Value={desc}
+                  setValue={setDesc}
                   Type={"text"}
-                  label={"Solution"}
+                  label={"Description"}
                   required={true}
-                  placeholder={"Enter Solution"}
+                  placeholder={"Enter Description"}
                 />
+              </div>
+              <div className="flex flex-col">
                 <div className="relative mb-[15px] w-[297px] maxInputWidth font-[Quicksand]">
                   <p className="absolute top-[-13px] left-3 w-fit bg-[white] text-custom-bg h-fit text-[18px] font-bold InputLabel font-montserrat">
-                    Overflow
+                    Logo
                   </p>
                   <input
                     type={"file"}
                     required={true}
-                    placeholder={"Upload Overflow"}
+                    placeholder={"Upload Logo"}
                     className="px-3 py-3 border-2 border-custom-bg rounded-[7.94px] w-full outline-none InputText font-montserrat"
-                    onChange={handleFileChangeOverflow}
+                    onChange={handleFileChangeLogo}
+                  />
+                </div>
+
+                <div className="relative mb-[15px] w-[297px] maxInputWidth font-[Quicksand]">
+                  <p className="absolute top-[-13px] left-3 w-fit bg-white text-custom-bg h-fit text-[18px] font-bold InputLabel font-montserrat">
+                    Primary Color
+                  </p>
+                  <input
+                    type={"color"}
+                    placeholder={"Select Primary Color"}
+                    className="px-3 py-3 border-2 border-custom-bg bg-white rounded-[7.94px] w-full outline-none InputText font-montserrat h-[6vh]"
+                    value={primaryColor}
+                    readOnly={false}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      console.log(console.log(value));
+                      setPrimaryColor(value.length ? value : "");
+                    }}
+                  />
+                </div>
+                <div className="relative mb-[15px] w-[297px] maxInputWidth font-[Quicksand]">
+                  <p className="absolute top-[-13px] left-3 w-fit bg-white text-custom-bg h-fit text-[18px] font-bold InputLabel font-montserrat">
+                    Main Color
+                  </p>
+                  <input
+                    type={"color"}
+                    placeholder={"Select Main Color"}
+                    className="px-3 py-3 border-2 border-custom-bg bg-white rounded-[7.94px] w-full outline-none InputText font-montserrat h-[6vh]"
+                    value={mainColor}
+                    readOnly={false}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      console.log(console.log(value));
+                      setMainColor(value.length ? value : "");
+                    }}
                   />
                 </div>
               </div>

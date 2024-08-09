@@ -9,13 +9,16 @@ const PortfolioCard = ({
   desc,
 }) => {
   const navigate = useNavigate();
+  console.log(primaryBgColor, mainBgColor);
   return (
     <div
-      className={`min-w-[200px] max-w-[450px] relative border-2 border-main overflow-hidden rounded-t-[20px] ${mainBgColor}`}
+      className={`min-w-[200px] max-w-[450px] relative border-2 border-main overflow-hidden rounded-t-[20px] `}
+      style={{ backgroundColor: primaryBgColor }}
     >
       <img src={imgUrl} className="w-full" />
       <div
-        className={`w-full text-white px-3 flex flex-col gap-y-4 py-4 rounded-t-[20px] ${primaryBgColor}`}
+        className={`w-full text-white px-3 flex flex-col gap-y-4 py-4 rounded-t-[20px]`}
+        style={{ backgroundColor: mainBgColor }}
       >
         <div className="font-semibold text-xl">{title}</div>
         <div className="text-[1rem] font-thin">{desc}</div>
