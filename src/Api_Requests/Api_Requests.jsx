@@ -26,3 +26,6 @@ export const apiForImage = axios.create({
 // Postrfolio
 export const GetPortfolioApi = () => api.get("/portfolio");
 export const AddPortfolioApi = (payload) => api.post("/portfolio", payload);
+export const UpdatePortfolioApi = (id, payload) =>
+  api.put("/portfolio/" + id, payload);
+export const DeletePortfolioApi = (id) => api.delete("/portfolio/" + id);

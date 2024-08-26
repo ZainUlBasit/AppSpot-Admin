@@ -3,11 +3,19 @@ import AddNewPortfolioModal from "./Components/Modals/AddNewPortfolioModal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPortfolios } from "./store/Slices/PortfolioSlice";
 import PortfolioCard from "./Components/Cards/PortfolioCard";
+import EditPortfolioModal from "./Components/Modals/EditPortfolioModal";
+import DeleteModal from "./Components/Modals/DeleteModal";
+import { DeletePortfolioApi } from "./Api_Requests/Api_Requests";
+import { SuccessToast } from "./utils/ShowToast";
 
 function App() {
   const [OpenModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
   const PortfolioState = useSelector((state) => state.PortfolioState);
+  const [OpenEditModal, setOpenEditModal] = useState(false);
+  const [OpenDeleteModal, setOpenDeleteModal] = useState(false);
+  const [SelectedId, setSelectedId] = useState("");
+  const [Loading, setLoading] = useState(false);
   useEffect(() => {
     dispatch(fetchPortfolios());
   }, []);
@@ -30,22 +38,15 @@ function App() {
             {PortfolioState.data.map((dt) => {
               return (
                 <PortfolioCard
+                  id={dt._id}
                   mainBgColor={dt.main_color}
                   primaryBgColor={dt.primary_color}
                   title={dt.title}
                   desc={dt.desc || ""}
                   imgUrl={dt.attachment}
-                />
-              );
-            })}
-            {PortfolioState.data.map((dt) => {
-              return (
-                <PortfolioCard
-                  mainBgColor={dt.main_color}
-                  primaryBgColor={dt.primary_color}
-                  title={dt.title}
-                  desc={dt.desc || ""}
-                  imgUrl={dt.attachment}
+                  setOpenDeleteModal={setOpenDeleteModal}
+                  setOpenEditModal={setOpenEditModal}
+                  setSelectedId={setSelectedId}
                 />
               );
             })}
@@ -81,6 +82,35 @@ function App() {
       </div>
       {OpenModal && (
         <AddNewPortfolioModal Open={OpenModal} setOpen={setOpenModal} />
+      )}
+      {OpenEditModal && (
+        <EditPortfolioModal
+          Open={OpenEditModal}
+          setOpen={setOpenEditModal}
+          portfolio={PortfolioState.data.find((dt) => dt._id === SelectedId)}
+        />
+      )}
+
+      {OpenDeleteModal && (
+        <DeleteModal
+          Open={OpenDeleteModal}
+          setOpen={setOpenDeleteModal}
+          Loading={Loading}
+          onSubmit={async () => {
+            setLoading(true);
+            try {
+              const response = await DeletePortfolioApi(SelectedId);
+              if (response.data.success) {
+                SuccessToast(response.data.data.msg);
+                setOpenDeleteModal(false);
+                dispatch(fetchPortfolios());
+              }
+            } catch (err) {
+              console.log(err);
+            }
+            setLoading(false);
+          }}
+        />
       )}
     </div>
   );
