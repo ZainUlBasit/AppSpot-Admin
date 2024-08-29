@@ -39,54 +39,56 @@ const EditPortfolioModal = ({ Open, setOpen, portfolio }) => {
     setselectedLogo(file);
   };
 
-  const handleAddPortfolio = async () => {
+  const handleEditPortfolio = async () => {
     setLoading(true);
     try {
-      let attachmentUrl = attachment;
+      // Initialize URLs with existing data
+      let newAttachmentUrl = attachment;
+      let newLogoUrl = logo;
+
+      // Check if a new attachment is selected
       if (selectedAttachment) {
         const attachmentRef = ref(storage, `/attachments/${title}`);
-        const snapshot = await uploadBytes(attachmentRef, selectedLogo);
-        attachmentUrl = await getDownloadURL(snapshot.ref);
-      }
-      if (!attachmentUrl) {
-        ErrorToast("Please select an attachment!");
-        setLoading(false);
-        return;
+
+        // Upload the new attachment, using the selected file
+        const attachmentSnapshot = await uploadBytes(
+          attachmentRef,
+          selectedAttachment
+        );
+        newAttachmentUrl = await getDownloadURL(attachmentSnapshot.ref);
       }
 
-      let logoUrl = logo;
+      // Check if a new logo is selected
       if (selectedLogo) {
         const logoRef = ref(storage, `/logos/${title}`);
-        const snapshot = await uploadBytes(logoRef, selectedLogo);
-        logoUrl = await getDownloadURL(snapshot.ref);
-      }
-      if (!logoUrl) {
-        ErrorToast("Please select a logo!");
-        setLoading(false);
-        return;
+
+        // Upload the new logo, using the selected file
+        const logoSnapshot = await uploadBytes(logoRef, selectedLogo);
+        newLogoUrl = await getDownloadURL(logoSnapshot.ref);
       }
 
+      // Call the API to update the portfolio with the new or existing URLs
       const response = await UpdatePortfolioApi(portfolio._id, {
         title,
-        attachment: attachmentUrl,
+        attachment: newAttachmentUrl,
         ios_link: iosLink,
         android_link: androidLink,
         web_link: webLink,
-        logo: logoUrl,
+        logo: newLogoUrl,
         primary_color: primaryColor,
         main_color: mainColor,
         desc,
       });
 
       if (response.data.success) {
-        SuccessToast("Portfolio Updated successfully!");
+        SuccessToast("Portfolio updated successfully!");
         dispatch(fetchPortfolios());
         setOpen(false);
       } else {
-        ErrorToast("Unable to Update portfolio");
+        ErrorToast("Unable to update portfolio");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       ErrorToast(err.response?.data?.error?.msg || err.message);
     }
     setLoading(false);
@@ -231,9 +233,9 @@ const EditPortfolioModal = ({ Open, setOpen, portfolio }) => {
           {!Loading && (
             <div
               className="cursor-pointer bg-[green] hover:bg-[#008000e1] px-4 py-3 font-bold text-[white] transition-all ease-in-out duration-500 rounded-[10px] w-[100px] text-center"
-              onClick={handleAddPortfolio}
+              onClick={handleEditPortfolio}
             >
-              Add
+              Update
             </div>
           )}
           <div
